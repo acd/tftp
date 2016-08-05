@@ -226,9 +226,14 @@ func (s *sender) abort(err error) error {
 	if s.conn == nil {
 		return nil
 	}
-	n := packERROR(s.send, 1, err.Error())
+	var code uint16 = 1
+	if e, ok := err.(*TFTPError); ok {
+		code = e.code
+	}
+	n := packERROR(s.send, code, err.Error())
 	_, err = s.conn.WriteToUDP(s.send[:n], s.addr)
 	if err != nil {
+		fmt.Println("write failed: ", err)
 		return err
 	}
 	s.conn.Close()
