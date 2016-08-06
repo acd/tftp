@@ -236,7 +236,6 @@ func (s *sender) abort(err error) error {
 	n := packERROR(s.send, code, err.Error())
 	_, err = s.conn.WriteToUDP(s.send[:n], s.addr)
 	if err != nil {
-		fmt.Println("write failed: ", err)
 		return err
 	}
 	s.conn.Close()
